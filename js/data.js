@@ -56,3 +56,24 @@ export const voituresInitiales = [
     "statut": "Disponible"
   }
 ];
+
+export const statutColor = [
+  {
+    nom: "Disponible",
+    class: "badge-disponible",
+    color: "#1d7048",
+    background: "#eaf7f0"
+  },
+  {
+    nom: "Louée",
+    class: "badge-louee",
+    color: "#2c53b1",
+    background: "#eaf0ff"
+  },
+  {
+    nom: "En maintenance",
+    class: "badge-maintenance",
+    color: "#8a5910",
+    background: "#fff4df"
+  }
+]

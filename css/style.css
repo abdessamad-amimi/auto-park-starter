@@ -445,6 +445,20 @@ tbody tr:hover {
 .skip-link:focus {
   transform: translateY(0);
 }
+
+.disponible{
+  color: #1d7048 !important;
+  background-color: #eaf7f0 !important;
+}
+.louee{
+  color: #2c53b1 !important;
+  background-color: #eaf0ff !important;
+}
+.maintenance{
+  color: #8a5910 !important;
+  background-color: #fff4df !important;
+}
+
 @media (max-width: 1100px) {
   .toolbar {
     grid-template-columns: repeat(3, minmax(0, 1fr));
