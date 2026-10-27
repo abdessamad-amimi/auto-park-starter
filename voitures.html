@@ -51,7 +51,7 @@
           >
         </div>
         <!-- TODO JS : gérer submit, valider, ajouter ou modifier une voiture. -->
-        <form id="formulaire-voiture" novalidate>
+        <form id="formulaire-voiture" >
           <input type="hidden" id="voiture-id" name="id" value="" />
           <div class="form-grid">
             <div class="field">
@@ -63,7 +63,6 @@
                 name="marque"
                 type="text"
                 placeholder="Ex. : Dacia"
-                required
                 aria-describedby="erreur-marque"
               />
               <small id="erreur-marque" class="field-error"></small>
@@ -77,7 +76,6 @@
                 name="modele"
                 type="text"
                 placeholder="Ex. : Sandero"
-                required
                 aria-describedby="erreur-modele"
               />
               <small id="erreur-modele" class="field-error"></small>
@@ -91,7 +89,6 @@
                 name="immatriculation"
                 type="text"
                 placeholder="Ex. : AUTO-007"
-                required
                 aria-describedby="aide-immatriculation erreur-immatriculation"
               />
               <small id="aide-immatriculation" class="field-help"
@@ -106,7 +103,6 @@
               <select
                 id="categorie"
                 name="categorie"
-                required
                 aria-describedby="erreur-categorie"
               >
                 <option value="">Choisir une catégorie</option>
@@ -127,7 +123,6 @@
                 min="0.01"
                 step="0.01"
                 placeholder="Ex. : 250"
-                required
                 aria-describedby="erreur-prix-jour"
               />
               <small id="erreur-prix-jour" class="field-error"></small>
@@ -139,7 +134,6 @@
               <select
                 id="statut"
                 name="statut"
-                required
                 aria-describedby="erreur-statut"
               >
                 <option value="Disponible">Disponible</option>
