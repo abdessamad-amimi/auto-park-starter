@@ -230,6 +230,6 @@ buttonAjouter.addEventListener("click", (e) => {
 
 const button_delete = document.querySelector(".button-delete");
 
-button_delete.addEventListener("click" => (e) => {
+button_delete.addEventListener("click" , (e) => {
     e.preventDefault();
 })
