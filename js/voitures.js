@@ -1,11 +1,14 @@
 import { voituresInitiales } from "./data.js";
 import { statutColor } from "./data.js";
 
-let showedType = null;
+let showedType = JSON.parse(localStorage.getItem("data"));
+let idModified = null;
 
 // localStorage.setItem("data" , JSON.stringify(voituresInitiales));
 
 let isModified = false;
+
+let objetVoiture = null;
 
 let nextId = Number(localStorage.getItem("id")) || 8;
 
@@ -63,6 +66,20 @@ function AfficherVoiture(_data) {
         buttonModifier.dataset.id = data.id;
         buttonModifier.ariaLabel = "Modifier la voiture";
         buttonModifier.textContent = "Modifier";
+        buttonModifier.addEventListener("click", (e) => {
+            e.preventDefault();
+            buttonAjouter.textContent = "Modifier la voiture";
+            input_categorie.value = data.categorie;
+            input_immatriculation.value = data.immatriculation;
+            input_marque.value = data.marque;
+            input_modele.value = data.modele;
+            input_prix_jour.value = data.prixJour;
+            input_statut.value = data.statut
+            isModified = true;
+            idModified = data.id;
+            objetVoiture = data;
+        })
+
         const buttonSupprimer = document.createElement("button");
         buttonSupprimer.classList = "button button-delete";
         buttonSupprimer.dataset.action = "supprimer";
@@ -79,9 +96,10 @@ function AfficherVoiture(_data) {
     })
 }
 
-AfficherVoiture(JSON.parse(localStorage.getItem("data")));
+AfficherVoiture(showedType);
 
 const buttonAjouter = document.querySelector("#bouton-enregistrer");
+const button_edit = document.querySelector(".button-edit");
 let input_marque = document.querySelector("#marque");
 let input_modele = document.querySelector("#modele");
 let input_immatriculation = document.querySelector("#immatriculation");
@@ -101,13 +119,17 @@ const immatriculationRegex = /^[A-Za-z]{4}-\d{3,5}$/
 
 function immatriculationExist(_input) {
     let exist = false;
+
     JSON.parse(localStorage.getItem("data")).forEach((voiture) => {
-        if (voiture.immatriculation.toLowerCase() === _input.toLowerCase()) exist = true;
+        if (voiture.immatriculation.toLowerCase() === _input.toLowerCase() && voiture.id !== idModified) {
+            exist = true;
+        }
     });
+
     return exist;
 }
 
-function AjouterVoiture() {
+function AjouterVoiture(ElementModified) {
     let valid = true;
     let marque = "";
     let modele = "";
@@ -191,45 +213,72 @@ function AjouterVoiture() {
     nextId = Number(localStorage.getItem("id")) || 8;
     // if valid
     if (valid) {
-        const objet = {
-            "id": nextId,
-            "marque": marque,
-            "modele": modele,
-            "immatriculation": immatriculation,
-            "categorie": categorie,
-            "prixJour": prix_jour,
-            "statut": statut
-        }
 
-        input_categorie.value = "";
-        input_immatriculation.value = "";
-        input_marque.value = "";
-        input_modele.value = "";
-        input_prix_jour.value = "";
-        input_statut.value = "Disponible"
+
+
 
 
         let dataVoiture = JSON.parse(localStorage.getItem("data"));
-        dataVoiture.push(objet);
-        localStorage.setItem("data" , JSON.stringify(dataVoiture));
+        if (!isModified) {
+            const objet = {
+                "id": nextId,
+                "marque": marque,
+                "modele": modele,
+                "immatriculation": immatriculation,
+                "categorie": categorie,
+                "prixJour": prix_jour,
+                "statut": statut
+            }
 
-        nextId ++;
-        localStorage.setItem("id" , nextId);
-        AfficherVoiture(dataVoiture);
+            dataVoiture.push(objet);
+            localStorage.setItem("data", JSON.stringify(dataVoiture));
+
+            nextId++;
+            localStorage.setItem("id", nextId);
+            input_categorie.value = "";
+            input_immatriculation.value = "";
+            input_marque.value = "";
+            input_modele.value = "";
+            input_prix_jour.value = "";
+            input_statut.value = "Disponible"
+        }
+        else {
+            const objet = {
+                "id": ElementModified.id,
+                "marque": marque,
+                "modele": modele,
+                "immatriculation": immatriculation,
+                "categorie": categorie,
+                "prixJour": prix_jour,
+                "statut": statut
+            }
+
+            let index = dataVoiture.findIndex((voiture) => voiture.id === idModified)
+            dataVoiture[index] = objet;
+
+            localStorage.setItem("data", JSON.stringify(dataVoiture));
+            
+            buttonAjouter.textContent = "Ajouter la voiture";
+            input_categorie.value = "";
+            input_immatriculation.value = "";
+            input_marque.value = "";
+            input_modele.value = "";
+            input_prix_jour.value = "";
+            input_statut.value = "Disponible"
+
+
+            isModified = false;
+        }
+        showedType = JSON.parse(localStorage.getItem("data"));
+        AfficherVoiture(showedType);
     }
-
 }
 
 buttonAjouter.addEventListener("click", (e) => {
     e.preventDefault();
-    if(!isModified) AjouterVoiture();
-    else{
-        isModified = false;
+    if (!isModified) AjouterVoiture();
+    else {
+        AjouterVoiture(objetVoiture);
     }
 })
 
-const button_delete = document.querySelector(".button-delete");
-
-button_delete.addEventListener("click" , (e) => {
-    e.preventDefault();
-})
