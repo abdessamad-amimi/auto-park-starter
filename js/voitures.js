@@ -303,11 +303,80 @@ function SupprimerVoiture() {
     }
     if (confirm("Confirmer de supprimer: ")) {
         let dataVoiture = JSON.parse(localStorage.getItem("data"));
-        let index = dataVoiture.findIndex((voiture) => voiture.id === idSupprimer);
-        dataVoiture.splice(index, 1);
+        dataVoiture = dataVoiture.filter((voiture) => voiture.id !== idSupprimer);
         localStorage.setItem("data", JSON.stringify(dataVoiture));
         showedType = JSON.parse(localStorage.getItem("data"));
-        AfficherVoiture(showedType);
+        let fullData = JSON.parse(localStorage.getItem("data"));
+        recherche_input.value = "";
+        filtre_statut.value = "";
+        filtre_categorie.value = "";
+        tri_prix.value = "";
+        AfficherVoiture(fullData);
     }
 }
 
+const recherche_input = document.querySelector("#recherche");
+const filtre_statut = document.querySelector("#filtre-statut");
+const filtre_categorie = document.querySelector("#filtre-categorie");
+const tri_prix = document.querySelector("#tri-prix");
+const reinitialiser_filtres = document.querySelector("#reinitialiser-filtres");
+
+function Recherche(array, input) {
+    let filtredData = array.filter((data) =>
+        data.marque.toLowerCase().startsWith(input.toLowerCase()) ||
+        data.modele.toLowerCase().startsWith(input.toLowerCase()) ||
+        data.immatriculation.toLowerCase().startsWith(input.toLowerCase()) ||
+        data.categorie.toLowerCase().startsWith(input.toLowerCase())
+    );
+    return filtredData
+}
+
+function FilterStatut(array, input) {
+    if (input === "") return array;
+    let filtredData = array.filter((data) =>
+        data.statut.toLowerCase() === input.toLowerCase()
+    );
+    return filtredData
+}
+
+function FilterCategorie(array, input) {
+    if (input === "") return array;
+    let filtredData = array.filter((data) =>
+        data.categorie.toLowerCase() === input.toLowerCase()
+    );
+    return filtredData
+}
+
+
+recherche_input.addEventListener("input", () => {
+    showedType = JSON.parse(localStorage.getItem("data"));
+    let filtred_data = Recherche(showedType, recherche_input.value);
+    filtred_data = FilterStatut(filtred_data, filtre_statut.value);
+    filtred_data = FilterCategorie(filtred_data, filtre_categorie.value);
+    AfficherVoiture(filtred_data);
+})
+
+filtre_statut.addEventListener("change", () => {
+    showedType = JSON.parse(localStorage.getItem("data"));
+    let filtred_data = Recherche(showedType, recherche_input.value);
+    filtred_data = FilterStatut(filtred_data, filtre_statut.value);
+    filtred_data = FilterCategorie(filtred_data, filtre_categorie.value);
+    AfficherVoiture(filtred_data);
+})
+
+filtre_categorie.addEventListener("change", () => {
+    showedType = JSON.parse(localStorage.getItem("data"));
+    let filtred_data = Recherche(showedType, recherche_input.value);
+    filtred_data = FilterStatut(filtred_data, filtre_statut.value);
+    filtred_data = FilterCategorie(filtred_data, filtre_categorie.value);
+    AfficherVoiture(filtred_data);
+})
+
+reinitialiser_filtres.addEventListener("click", () => {
+    let fullData = JSON.parse(localStorage.getItem("data"));
+    recherche_input.value = "";
+    filtre_statut.value = "";
+    filtre_categorie.value = "";
+    tri_prix.value = "";
+    AfficherVoiture(fullData);
+})
