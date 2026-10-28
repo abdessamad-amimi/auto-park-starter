@@ -27,8 +27,25 @@ function getStatut(statut) {
     return className;
 }
 
+function ResetForm() {
+    input_categorie.value = "";
+    input_immatriculation.value = "";
+    input_marque.value = "";
+    input_modele.value = "";
+    input_prix_jour.value = "";
+    input_statut.value = "Disponible"
+}
+
+const etat_vide = document.querySelector("#etat-vide");
+
+
 function AfficherVoiture(_data) {
     liste_voitures.innerHTML = "";
+    etat_vide.hidden = true;
+    if (_data.length === 0) {
+        etat_vide.hidden = false;
+        return;
+    }
     _data.forEach((data) => {
         const tr = document.createElement("tr");
 
@@ -87,6 +104,7 @@ function AfficherVoiture(_data) {
                 top: 0,
                 behavior: "smooth"
             });
+            button_annuler.removeAttribute("hidden");
         })
 
         const buttonSupprimer = document.createElement("button");
@@ -113,7 +131,7 @@ function AfficherVoiture(_data) {
 AfficherVoiture(showedType);
 
 const buttonAjouter = document.querySelector("#bouton-enregistrer");
-const button_edit = document.querySelector(".button-edit");
+const button_annuler = document.querySelector("#annuler-modification");
 let input_marque = document.querySelector("#marque");
 let input_modele = document.querySelector("#modele");
 let input_immatriculation = document.querySelector("#immatriculation");
@@ -128,7 +146,7 @@ let erreur_categorie = document.querySelector("#erreur-categorie");
 let erreur_prix_jour = document.querySelector("#erreur-prix-jour");
 // let erreur_statut = document.querySelector("#erreur-statut");
 
-const letterRegex = /^[A-Za-z0-9]+$/;
+const letterRegex = /^[A-Za-z]+$/;
 const immatriculationRegex = /^[A-Za-z]{4}-\d{3,5}$/
 
 function immatriculationExist(_input) {
@@ -228,10 +246,6 @@ function AjouterVoiture(ElementModified) {
     // if valid
     if (valid) {
 
-
-
-
-
         let dataVoiture = JSON.parse(localStorage.getItem("data"));
         if (!isModified) {
             const objet = {
@@ -273,13 +287,8 @@ function AjouterVoiture(ElementModified) {
             localStorage.setItem("data", JSON.stringify(dataVoiture));
 
             buttonAjouter.textContent = "Ajouter la voiture";
-            input_categorie.value = "";
-            input_immatriculation.value = "";
-            input_marque.value = "";
-            input_modele.value = "";
-            input_prix_jour.value = "";
-            input_statut.value = "Disponible"
-
+            button_annuler.hidden = true;
+            ResetForm();
 
             isModified = false;
         }
@@ -294,6 +303,12 @@ buttonAjouter.addEventListener("click", (e) => {
     else {
         AjouterVoiture(objetVoiture);
     }
+})
+
+button_annuler.addEventListener("click", () => {
+    buttonAjouter.textContent = "Ajouter la voiture";
+    button_annuler.hidden = true;
+    ResetForm();
 })
 
 function SupprimerVoiture() {
@@ -318,8 +333,35 @@ function SupprimerVoiture() {
 const recherche_input = document.querySelector("#recherche");
 const filtre_statut = document.querySelector("#filtre-statut");
 const filtre_categorie = document.querySelector("#filtre-categorie");
-const tri_prix = document.querySelector("#tri-prix");
+const trie_prix = document.querySelector("#tri-prix");
 const reinitialiser_filtres = document.querySelector("#reinitialiser-filtres");
+
+
+
+let croissant = (a, b) => {
+    if (a.prixJour < b.prixJour) {
+        return -1;
+    }
+    if (a.prixJour > b.prixJour) {
+        return 1;
+    }
+    return 0;
+};
+
+let decroissant = (a, b) => {
+    if (a.prixJour > b.prixJour) {
+        return -1;
+    }
+    if (a.prixJour < b.prixJour) {
+        return 1;
+    }
+    return 0;
+};
+
+const tris = {
+    croissant: croissant,
+    decroissant: decroissant
+};
 
 function Recherche(array, input) {
     let filtredData = array.filter((data) =>
@@ -347,29 +389,34 @@ function FilterCategorie(array, input) {
     return filtredData
 }
 
+function TrieArray(array, choice) {
+    if (choice === "") return array;
+    return array.sort(tris[choice]);
+}
 
-recherche_input.addEventListener("input", () => {
+function CallFunctions() {
     showedType = JSON.parse(localStorage.getItem("data"));
     let filtred_data = Recherche(showedType, recherche_input.value);
     filtred_data = FilterStatut(filtred_data, filtre_statut.value);
     filtred_data = FilterCategorie(filtred_data, filtre_categorie.value);
+    filtred_data = TrieArray(filtred_data, trie_prix.value);
     AfficherVoiture(filtred_data);
+}
+
+recherche_input.addEventListener("input", () => {
+    CallFunctions();
 })
 
 filtre_statut.addEventListener("change", () => {
-    showedType = JSON.parse(localStorage.getItem("data"));
-    let filtred_data = Recherche(showedType, recherche_input.value);
-    filtred_data = FilterStatut(filtred_data, filtre_statut.value);
-    filtred_data = FilterCategorie(filtred_data, filtre_categorie.value);
-    AfficherVoiture(filtred_data);
+    CallFunctions();
 })
 
 filtre_categorie.addEventListener("change", () => {
-    showedType = JSON.parse(localStorage.getItem("data"));
-    let filtred_data = Recherche(showedType, recherche_input.value);
-    filtred_data = FilterStatut(filtred_data, filtre_statut.value);
-    filtred_data = FilterCategorie(filtred_data, filtre_categorie.value);
-    AfficherVoiture(filtred_data);
+    CallFunctions();
+})
+
+trie_prix.addEventListener("change", () => {
+    CallFunctions();
 })
 
 reinitialiser_filtres.addEventListener("click", () => {
@@ -377,6 +424,6 @@ reinitialiser_filtres.addEventListener("click", () => {
     recherche_input.value = "";
     filtre_statut.value = "";
     filtre_categorie.value = "";
-    tri_prix.value = "";
+    trie_prix.value = "";
     AfficherVoiture(fullData);
 })
