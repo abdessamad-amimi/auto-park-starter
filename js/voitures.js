@@ -1,10 +1,15 @@
 import { voituresInitiales } from "./data.js";
 import { statutColor } from "./data.js";
 
-let showedType = JSON.parse(localStorage.getItem("data"));
-let idModified = null;
 
-// localStorage.setItem("data" , JSON.stringify(voituresInitiales));
+let idModified = null;
+let idSupprimer = null;
+
+
+if (!JSON.parse(localStorage.getItem("data"))) {
+    localStorage.setItem("data", JSON.stringify(voituresInitiales));
+}
+let showedType = JSON.parse(localStorage.getItem("data"));
 
 let isModified = false;
 
@@ -78,6 +83,10 @@ function AfficherVoiture(_data) {
             isModified = true;
             idModified = data.id;
             objetVoiture = data;
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
         })
 
         const buttonSupprimer = document.createElement("button");
@@ -89,6 +98,11 @@ function AfficherVoiture(_data) {
         divActions.appendChild(buttonModifier);
         divActions.appendChild(buttonSupprimer);
         actionsTd.appendChild(divActions);
+        buttonSupprimer.addEventListener("click", (e) => {
+            e.preventDefault();
+            idSupprimer = data.id;
+            SupprimerVoiture();
+        })
 
         tr.append(marqueTd, modeleTd, immatriculationTd, categorieTd, prixJourTd, statutTd, actionsTd);
 
@@ -253,11 +267,11 @@ function AjouterVoiture(ElementModified) {
                 "statut": statut
             }
 
-            let index = dataVoiture.findIndex((voiture) => voiture.id === idModified)
+            let index = dataVoiture.findIndex((voiture) => voiture.id === idModified);
             dataVoiture[index] = objet;
 
             localStorage.setItem("data", JSON.stringify(dataVoiture));
-            
+
             buttonAjouter.textContent = "Ajouter la voiture";
             input_categorie.value = "";
             input_immatriculation.value = "";
@@ -281,4 +295,19 @@ buttonAjouter.addEventListener("click", (e) => {
         AjouterVoiture(objetVoiture);
     }
 })
+
+function SupprimerVoiture() {
+    if (idModified === idSupprimer) {
+        alert("Impossible de supprimer cette voiture pendant sa modification.");
+        return;
+    }
+    if (confirm("Confirmer de supprimer: ")) {
+        let dataVoiture = JSON.parse(localStorage.getItem("data"));
+        let index = dataVoiture.findIndex((voiture) => voiture.id === idSupprimer);
+        dataVoiture.splice(index, 1);
+        localStorage.setItem("data", JSON.stringify(dataVoiture));
+        showedType = JSON.parse(localStorage.getItem("data"));
+        AfficherVoiture(showedType);
+    }
+}
 
