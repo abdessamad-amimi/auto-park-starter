@@ -1,6 +1,9 @@
 import { voituresInitiales } from "./data.js";
 import { statutColor } from "./data.js";
-
+import { ManagerVoiture } from "./managers/VoitureManager.js";
+import { Voiture } from "./models/Voiture.js"
+let manager = new ManagerVoiture();
+console.log(manager.voitures[0] instanceof Voiture);
 
 let idModified = null;
 let idSupprimer = null;
@@ -128,7 +131,7 @@ function AfficherVoiture(_data) {
     })
 }
 
-AfficherVoiture(showedType);
+AfficherVoiture(manager.AfficherVoiture());
 
 const buttonAjouter = document.querySelector("#bouton-enregistrer");
 const button_annuler = document.querySelector("#annuler-modification");
@@ -246,7 +249,7 @@ function AjouterVoiture(ElementModified) {
     // if valid
     if (valid) {
 
-        let dataVoiture = JSON.parse(localStorage.getItem("data"));
+        // let dataVoiture = JSON.parse(localStorage.getItem("data"));
         if (!isModified) {
             const objet = {
                 "id": nextId,
@@ -258,8 +261,7 @@ function AjouterVoiture(ElementModified) {
                 "statut": statut
             }
 
-            dataVoiture.push(objet);
-            localStorage.setItem("data", JSON.stringify(dataVoiture));
+            manager.AjouterVoiture(objet);
 
             nextId++;
             localStorage.setItem("id", nextId);
@@ -281,19 +283,19 @@ function AjouterVoiture(ElementModified) {
                 "statut": statut
             }
 
-            let index = dataVoiture.findIndex((voiture) => voiture.id === idModified);
-            dataVoiture[index] = objet;
+            // let index = dataVoiture.findIndex((voiture) => voiture.id === idModified);
+            // dataVoiture[index] = objet;
 
-            localStorage.setItem("data", JSON.stringify(dataVoiture));
+            // localStorage.setItem("data", JSON.stringify(dataVoiture));
+
+            manager.ModifierVoiture(idModified, objet);
 
             buttonAjouter.textContent = "Ajouter la voiture";
             button_annuler.hidden = true;
             ResetForm();
-
             isModified = false;
         }
-        showedType = JSON.parse(localStorage.getItem("data"));
-        AfficherVoiture(showedType);
+        AfficherVoiture(manager.AfficherVoiture());
     }
 }
 
@@ -317,16 +319,12 @@ function SupprimerVoiture() {
         return;
     }
     if (confirm("Confirmer de supprimer: ")) {
-        let dataVoiture = JSON.parse(localStorage.getItem("data"));
-        dataVoiture = dataVoiture.filter((voiture) => voiture.id !== idSupprimer);
-        localStorage.setItem("data", JSON.stringify(dataVoiture));
-        showedType = JSON.parse(localStorage.getItem("data"));
-        let fullData = JSON.parse(localStorage.getItem("data"));
+        manager.SupprimerVoiture(idSupprimer);
         recherche_input.value = "";
         filtre_statut.value = "";
         filtre_categorie.value = "";
-        tri_prix.value = "";
-        AfficherVoiture(fullData);
+        trie_prix.value = "";
+        AfficherVoiture(manager.AfficherVoiture());
     }
 }
 
@@ -337,69 +335,11 @@ const trie_prix = document.querySelector("#tri-prix");
 const reinitialiser_filtres = document.querySelector("#reinitialiser-filtres");
 
 
-
-let croissant = (a, b) => {
-    if (a.prixJour < b.prixJour) {
-        return -1;
-    }
-    if (a.prixJour > b.prixJour) {
-        return 1;
-    }
-    return 0;
-};
-
-let decroissant = (a, b) => {
-    if (a.prixJour > b.prixJour) {
-        return -1;
-    }
-    if (a.prixJour < b.prixJour) {
-        return 1;
-    }
-    return 0;
-};
-
-const tris = {
-    croissant: croissant,
-    decroissant: decroissant
-};
-
-function Recherche(array, input) {
-    let filtredData = array.filter((data) =>
-        data.marque.toLowerCase().startsWith(input.toLowerCase()) ||
-        data.modele.toLowerCase().startsWith(input.toLowerCase()) ||
-        data.immatriculation.toLowerCase().startsWith(input.toLowerCase()) ||
-        data.categorie.toLowerCase().startsWith(input.toLowerCase())
-    );
-    return filtredData
-}
-
-function FilterStatut(array, input) {
-    if (input === "") return array;
-    let filtredData = array.filter((data) =>
-        data.statut.toLowerCase() === input.toLowerCase()
-    );
-    return filtredData
-}
-
-function FilterCategorie(array, input) {
-    if (input === "") return array;
-    let filtredData = array.filter((data) =>
-        data.categorie.toLowerCase() === input.toLowerCase()
-    );
-    return filtredData
-}
-
-function TrieArray(array, choice) {
-    if (choice === "") return array;
-    return array.sort(tris[choice]);
-}
-
 function CallFunctions() {
-    showedType = JSON.parse(localStorage.getItem("data"));
-    let filtred_data = Recherche(showedType, recherche_input.value);
-    filtred_data = FilterStatut(filtred_data, filtre_statut.value);
-    filtred_data = FilterCategorie(filtred_data, filtre_categorie.value);
-    filtred_data = TrieArray(filtred_data, trie_prix.value);
+    let filtred_data = manager.RechercherVoiture(manager.AfficherVoiture(), recherche_input.value);
+    filtred_data = manager.FilterStatut(filtred_data, filtre_statut.value);
+    filtred_data = manager.FilterCategorie(filtred_data, filtre_categorie.value);
+    filtred_data = manager.TrieArray(filtred_data, trie_prix.value);
     AfficherVoiture(filtred_data);
 }
 
