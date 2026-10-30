@@ -83,14 +83,14 @@ function immatriculationExist(_input) {
 function AjouterVoiture(ElementModified) {
 
     const result = Validation(letterRegex, immatriculationRegex, immatriculationExist);
-    // const {
-    //     marque,
-    //     modele,
-    //     immatriculation,
-    //     categorie,
-    //     prix_jour,
-    //     statut
-    // } = result;
+    const {
+        marque,
+        modele,
+        immatriculation,
+        categorie,
+        prix_jour,
+        statut
+    } = result;
 
     nextId = Number(localStorage.getItem("id")) || 8;
     // if valid

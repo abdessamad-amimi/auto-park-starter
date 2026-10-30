@@ -129,9 +129,9 @@ export function ResetForm() {
     selectors.input_modele.value = "";
     selectors.input_prix_jour.value = "";
     selectors.input_statut.value = "Disponible";
-    selectors.erreur_categorie.hidden = true;
-    selectors.erreur_immatriculation.hidden = true;
-    selectors.erreur_marque.hidden = true;
-    selectors.erreur_modele.hidden = true;
-    selectors.erreur_prix_jour.hidden = true;
+    selectors.erreur_categorie.textContent = "";
+    selectors.erreur_immatriculation.textContent = "";
+    selectors.erreur_marque.textContent = "";
+    selectors.erreur_modele.textContent = "";
+    selectors.erreur_prix_jour.textContent = "";
 }
