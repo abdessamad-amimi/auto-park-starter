@@ -67,7 +67,7 @@ function AfficherVoiture(_data) {
 AfficherVoiture(manager.AfficherVoiture());
 
 const letterRegex = /^[A-Za-z]+$/;
-const immatriculationRegex = /^[A-Za-z]{4}-\d{3,5}$/
+const immatriculationRegex = /^[A-Za-z]{4}-\d{3,5}$/;
 
 function immatriculationExist(_input) {
     let exist = false;
@@ -83,14 +83,14 @@ function immatriculationExist(_input) {
 function AjouterVoiture(ElementModified) {
 
     const result = Validation(letterRegex, immatriculationRegex, immatriculationExist);
-    const {
-        marque,
-        modele,
-        immatriculation,
-        categorie,
-        prix_jour,
-        statut
-    } = result;
+    // const {
+    //     marque,
+    //     modele,
+    //     immatriculation,
+    //     categorie,
+    //     prix_jour,
+    //     statut
+    // } = result;
 
     nextId = Number(localStorage.getItem("id")) || 8;
     // if valid
@@ -140,10 +140,7 @@ function AjouterVoiture(ElementModified) {
 
 selectors.buttonAjouter.addEventListener("click", (e) => {
     e.preventDefault();
-    if (!isModified) AjouterVoiture();
-    else {
-        AjouterVoiture(objetVoiture);
-    }
+    AjouterVoiture(objetVoiture);
 })
 
 selectors.button_annuler.addEventListener("click", () => {

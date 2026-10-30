@@ -22,3 +22,16 @@ export const trie_prix = document.querySelector("#tri-prix");
 export const reinitialiser_filtres = document.querySelector("#reinitialiser-filtres");
 
 export const etat_vide = document.querySelector("#etat-vide");
+
+export const totalVoiture = document.querySelector("#totalCars");
+export const voitureDisponible = document.querySelector("#availableCars");
+export const voitureLoue = document.querySelector("#rentedCars");
+export const voitureMaintenance = document.querySelector("#maintenanceCars");
+
+export const barDisponible = document.querySelector("#barAvailable");
+export const barLouee = document.querySelector("#barRented");
+export const barMaintenance = document.querySelector("#barMaintenance");
+
+export const categoryCitadine = document.querySelector("#categoryCitadine");
+export const categoryBerline = document.querySelector("#categoryBerline");
+export const categorySUV = document.querySelector("#categorySUV");

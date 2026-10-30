@@ -17,6 +17,7 @@ export function AfficherVoitures(_data, getStatut, onModifier, onSupprimer) {
         const buttonSupprimer = tr.querySelector('[data-action="supprimer"]');
 
         buttonModifier.addEventListener("click", () => {
+            ResetForm();
             onModifier(data);
         });
 
