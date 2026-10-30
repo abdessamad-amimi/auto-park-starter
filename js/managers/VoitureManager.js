@@ -23,7 +23,15 @@ export class ManagerVoiture {
         const voiture = this.voitures.find(v => v.id === id);
         const index = this.voitures.indexOf(voiture);
         if (index === -1) return
-        this.voitures[index] = newVoiture;
+        this.voitures[index] = new Voiture(
+            newVoiture.id,
+            newVoiture.marque,
+            newVoiture.modele,
+            newVoiture.immatriculation,
+            newVoiture.categorie,
+            newVoiture.prixJour,
+            newVoiture.statut
+        );
         localStorage.setItem("data", JSON.stringify(this.voitures));
     }
 
