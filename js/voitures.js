@@ -3,11 +3,16 @@ import { statutColor } from "./data.js";
 import { ManagerVoiture } from "./managers/VoitureManager.js";
 import { Voiture } from "./models/Voiture.js"
 import * as selectors from "./view/selectors.js";
-import { createVoitureRow } from "./view/voitureElements.js";
-import { AfficherVoitures, Validation, ResetForm } from "./view/ui.js";
+// import { createVoitureRow } from "./view/voitureElements.js";
+import { AfficherVoitures, MarqueValidation, ModeleValidation, CategorieValidation, PrixValidation, ImmatriculationValidation, ResetForm, CheckRemplir } from "./view/ui.js";
 
 let idModified = null;
 let idSupprimer = null;
+
+console.table(voituresInitiales);
+console.error("ici");
+
+
 
 if (!JSON.parse(localStorage.getItem("data"))) {
     localStorage.setItem("data", JSON.stringify(voituresInitiales));
@@ -72,7 +77,7 @@ const immatriculationRegex = /^[A-Za-z]{4}-\d{3,5}$/;
 function immatriculationExist(_input) {
     let exist = false;
 
-    JSON.parse(localStorage.getItem("data")).forEach((voiture) => {
+    manager.voitures.forEach((voiture) => {
         if (voiture.immatriculation.toLowerCase() === _input.toLowerCase() && voiture.id !== idModified) {
             exist = true;
         }
@@ -80,21 +85,64 @@ function immatriculationExist(_input) {
     return exist;
 }
 
+let valid = true;
+let marque = "";
+let modele = "";
+let immatriculation = "";
+let categorie = "";
+let prix_jour = 0;
+let statut = "";
+
+function CheckValidity() {
+    selectors.input_marque.addEventListener("input", () => {
+        const result = MarqueValidation(letterRegex);
+        valid = result.valid;
+        marque = result.marque;
+    });
+
+    selectors.input_modele.addEventListener("input", () => {
+        const result = ModeleValidation(letterRegex);
+        valid = result.valid;
+        modele = result.modele;
+    });
+
+    selectors.input_immatriculation.addEventListener("input", () => {
+        const result = ImmatriculationValidation(immatriculationExist, immatriculationRegex)
+        valid = result.valid;
+        immatriculation = result.immatriculation;
+    });
+
+    selectors.input_categorie.addEventListener("change", () => {
+        const result = CategorieValidation();
+        valid = result.valid;
+        categorie = result.categorie;
+    });
+
+    selectors.input_prix_jour.addEventListener("input", () => {
+        const result = PrixValidation();
+        valid = result.valid;
+        prix_jour = result.prix;
+    });
+}
+CheckValidity();
+
 function AjouterVoiture(ElementModified) {
+    // valid = CheckRemplir();
+    // console.log(valid);
+    // debugger; 
+    
+    valid = MarqueValidation().valid;
+    valid = ModeleValidation().valid;
+    valid = ImmatriculationValidation().valid;
+    valid = CategorieValidation().valid;
+    valid = PrixValidation().valid;
 
-    const result = Validation(letterRegex, immatriculationRegex, immatriculationExist);
-    const {
-        marque,
-        modele,
-        immatriculation,
-        categorie,
-        prix_jour,
-        statut
-    } = result;
-
+    statut = selectors.input_statut.value;
     nextId = Number(localStorage.getItem("id")) || 8;
-    // if valid
-    if (result.valid) {
+
+    CheckValidity();
+
+    if (valid) {
         if (!isModified) {
             const objet = {
                 "id": nextId,
@@ -117,11 +165,11 @@ function AjouterVoiture(ElementModified) {
         else {
             const objet = {
                 "id": ElementModified.id,
-                "marque": marque,
-                "modele": modele,
-                "immatriculation": immatriculation,
-                "categorie": categorie,
-                "prixJour": prix_jour,
+                "marque": selectors.input_marque.value,
+                "modele": selectors.input_modele.value,
+                "immatriculation": selectors.input_immatriculation.value,
+                "categorie": selectors.input_categorie.value,
+                "prixJour": selectors.input_prix_jour.value,
                 "statut": statut
             }
 

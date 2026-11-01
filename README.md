@@ -102,3 +102,6 @@ Le reste de la page reste adapté à la largeur de l'écran.
 
 Compléter ensuite ce README avec vos choix, les fonctionnalités réalisées,
 l'organisation de vos modules et le lien de déploiement.
+
+## Jira
+![Jira](./assets/images/jira.png)
