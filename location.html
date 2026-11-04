@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- css link -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/location.css">
+
+    <!-- js link -->
+    <script src="js/location.js" type="module"></script>
+
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container header-content">
+            <a class="brand" href="voitures.html" aria-label="AutoPark — Gestion du parc">
+                <span class="brand-mark" aria-hidden="true">A<span>.</span></span>
+                <span>AutoPark<small>ATLAS AUTO</small></span>
+            </a>
+            <nav aria-label="Navigation principale" class="hidden-nav">
+                <!-- index.html est le dashboard à créer par l'apprenant. -->
+                <a href="index.html">Dashboard</a>
+                <a href="voitures.html">Gestion du parc</a>
+                <a href="location.html" aria-current="page">Ma location</a>
+            </nav>
+            <button class="hidden-icon">
+                <i class="fa-solid fa-bars list-bar"></i>
+            </button>
+            <span class="agency-label">Agence de location</span>
+        </div>
+    </header>
+
+    <main>
+        <section class="top">
+            <h2>VOTRE LOCATION SUR MESURE</h2>
+            <h1>Composez votre location</h1>
+            <p>Votre voiture, vos date, vos options. A vous de choisir</p>
+
+            <div class="pages">
+                <p class="page current">
+                    <span class="nbr">1</span>
+                    <span class="title">Vehicule</span>
+                </p>
+                <p class="page">
+                    <span class="nbr">2</span>
+                    <span class="title">Récuperation</span>
+                </p>
+                <p class="page">
+                    <span class="nbr">3</span>
+                    <span class="title">Options</span>
+                </p>
+                <p class="page">
+                    <span class="nbr">4</span>
+                    <span class="title">Récuperatif</span>
+                </p>
+            </div>
+        </section>
+
+        <section class="vehicule">
+            <h3>01 / VEHICULE</h3>
+            <h2>Choisissez votre véhicule</h2>
+            <p>Séléctionnez une voiture disponible et votre période de location</p>
+
+            <div class="tikets">
+
+            </div>
+
+            <hr>
+
+            <section class="periode">
+                <h3>Votre période de location</h3>
+
+                <div class="debut">
+                    <label for="">Date de début *</label>
+                    <input class="date-debut" type="date">
+                </div>
+
+                <div class="debut">
+                    <label for="">Date de fin *</label>
+                    <input class="date-fin" type="date">
+                </div>
+
+                <p>
+                    Durée : 3 jours. Les dates de début et de fin sont incluses.
+                </p>
+
+            </section>
+
+            <hr>
+
+            <section class="actions">
+                <button class="recommencer">Recommencer</button>
+                <button class="suivant">Suivant</button>
+            </section>
+        </section>
+
+        <section hidden class="recuperation">
+            <h3>02 / RECUPERATION</h3>
+            <h2>Où récupérer votre voiture ?</h2>
+            <p>Choisissez le lieu qui vous convient.</p>
+
+            <div class="modes">
+                <article class="selectionned mode agence">
+                    <input checked name="recupereation" type="radio">
+                    <h3>A l'agence</h3>
+                    <p>Gratuit</p>
+                </article>
+
+                <article class="mode aeroport">
+                    <input name="recupereation" type="radio">
+                    <h3>A l'aéroport</h3>
+                    <p>+150 MAD</p>
+                </article>
+
+                <article class="mode adresse">
+                    <input name="recupereation" type="radio">
+                    <h3>A une adresse</h3>
+                    <p>+100 MAD</p>
+                </article>
+            </div>
+
+            <hr>
+
+            <section class="periode infoRecuperation">
+                <!-- <h3>Information de récupération</h3>
+
+                <div class="heure">
+                    <label for="">Heure de récupération *</label>
+                    <input class="heureRecuperation" type="time">
+                </div>
+
+                <p>
+                    Le supplément de récupération est ajouté une seule fois au total.
+                </p>
+
+                <div class="aero">
+                    <label for="">Aéroport *</label>
+                    <input type="text" name="" id="aeroport" placeholder="Casablanca — Mohammed V">
+                </div>
+
+                <div class="infoVol" style="display: flex; justify-content: space-between;">
+                    <div class="nVol" style="width: 40%;">
+                        <label for="">Numéro du vol</label>
+                        <input type="text" name="" id="Nvol" placeholder="AT 205">
+                    </div>
+
+                    <div class="hVol" style="width: 40%;">
+                        <label for="">Heure d'arrivée</label>
+                        <input type="time" placeholder="10:30">
+                    </div>
+                </div>
+
+                <p>
+                    Le supplément de récupération est ajouté une seule fois au total.
+                </p>
+
+                <div class="ville">
+                    <label for="">Ville *</label>
+                    <input type="text" name="" id="villeName" placeholder="Casablanca">
+                </div>
+
+                <div class="adresse">
+                    <label for="">Adresse Complete</label>
+                    <input type="text" name="" id="fullAdresse" placeholder="24, boulevard Zerktouni">
+                </div>
+
+                <div class="heure">
+                    <label for="">Heure de livraison</label>
+                    <input type="time" placeholder="10:30">
+                </div>
+
+                <p>
+                    Le supplément de récupération est ajouté une seule fois au total.
+                </p> -->
+            </section>
+
+            <hr>
+
+            <section class="actions">
+                <button class="recommencer">Recommencer</button>
+                <button class="suivant">Suivant</button>
+            </section>
+        </section>
+
+        <section class="payement">
+
+        </section>
+
+    </main>
+</body>
+
+</html>
