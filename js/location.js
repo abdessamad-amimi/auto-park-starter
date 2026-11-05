@@ -515,9 +515,17 @@ function ChargerPayement(selectedConfig) {
 
     const pOptions = create("p");
     pOptions.hidden = true;
-    const optionsLabel = create("label", "options");
-    const prixOptions = create("span", "prixOptions");
-    pOptions.append(optionsLabel, prixOptions);
+    const options1Label = create("label", "options");
+    const prixOptions1 = create("span", "prixOptions");
+
+    const options2Label = create("label", "options");
+    const prixOptions2 = create("span", "prixOptions");
+
+    pOptions.append(options1Label, prixOptions1, options2Label, prixOptions2);
+
+    if(selectedConfig.options.siegeBebe === true){
+        options1Label.textContent = `Siège`
+    }
 
     const pRecup = create("p");
     const recuperationLabel = create("label");
@@ -526,7 +534,6 @@ function ChargerPayement(selectedConfig) {
     if (selectedConfig.modeRecuperation === "") {
         recuperationLabel.textContent = "";
         prixRecu.textContent = "";
-        console.log("empty")
     }
     else if (selectedConfig.modeRecuperation === "agence") {
         recuperationLabel.textContent = "Récupération";
@@ -601,15 +608,29 @@ const conducteur = document.querySelector(".conducteur");
 siege.addEventListener("click" , () => {
     if (siege.classList.contains("optionSelectionned")) siege.classList.remove("optionSelectionned")
     else siege.classList.add("optionSelectionned")
-    if(siege.querySelector("input").checked === true) siege.querySelector("input").checked = false ;
-    else siege.querySelector("input").checked = true ;
+    if(siege.querySelector("input").checked === true){
+        siege.querySelector("input").checked = false ;
+        selectedConfig.options.siegeBebe = false;
+    }
+    else{
+        siege.querySelector("input").checked = true ;
+        selectedConfig.options.siegeBebe = true;
+    }
+    ChargerPayement();
 })
 
 conducteur.addEventListener("click" , () => {
     if (conducteur.classList.contains("optionSelectionned")) conducteur.classList.remove("optionSelectionned")
     else conducteur.classList.add("optionSelectionned")
-    if(conducteur.querySelector("input").checked === true) conducteur.querySelector("input").checked = false ;
-    else conducteur.querySelector("input").checked = true ;
+    if(conducteur.querySelector("input").checked === true){
+        conducteur.querySelector("input").checked = false ;
+        selectedConfig.options.conducteurSupplementaire = false;
+    }
+    else {
+        conducteur.querySelector("input").checked = true ;
+        selectedConfig.options.conducteurSupplementaire = true;
+    }
+    ChargerPayement();
 })
 
 

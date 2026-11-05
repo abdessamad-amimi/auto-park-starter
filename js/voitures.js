@@ -4,7 +4,7 @@ import { ManagerVoiture } from "./managers/VoitureManager.js";
 import { Voiture } from "./models/Voiture.js"
 import * as selectors from "./view/selectors.js";
 import { createVoitureRow } from "./view/voitureElements.js";
-// import { AfficherVoitures, Validation, ResetForm } from "./view/ui.js";
+import { AfficherVoitures, Validation, ResetForm } from "./view/ui.js";
 
 
 let idModified = null;
