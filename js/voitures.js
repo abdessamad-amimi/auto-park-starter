@@ -6,6 +6,7 @@ import * as selectors from "./view/selectors.js";
 import { createVoitureRow } from "./view/voitureElements.js";
 // import { AfficherVoitures, Validation, ResetForm } from "./view/ui.js";
 
+
 let idModified = null;
 let idSupprimer = null;
 
