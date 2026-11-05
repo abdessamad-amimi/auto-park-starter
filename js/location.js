@@ -6,7 +6,7 @@ const selectedConfig = {
     voitureId: null,
     dateDebut: "",
     dateFin: "",
-    modeRecuperation: "agence",
+    modeRecuperation: "",
 
     recuperation: {
         // Mode agence uniquement.
@@ -29,8 +29,16 @@ const selectedConfig = {
     },
 };
 
+console.log(selectedConfig)
+
+
+let precedent = false;
+
+const sectionPayement = document.querySelector(".payement");
+
 const vehiculeSection = document.querySelector(".vehicule");
 const recuperationSection = document.querySelector(".recuperation");
+const optionSection = document.querySelector(".options")
 
 const suivant = document.querySelectorAll(".suivant");
 const recommencer = document.querySelectorAll(".recommencer");
@@ -41,22 +49,135 @@ const agence = document.querySelector(".agence");
 
 const infoRecuperation = document.querySelector(".infoRecuperation");
 
+const pages = document.querySelectorAll(".page");
+const nbr = document.querySelectorAll(".nbr");
+
+function VehiculeValid() {
+    let valid = true;
+    let oneChecked = false;
+    document.querySelectorAll(".car").forEach((article) => {
+        if (article.classList.contains("selectionned")) {
+            oneChecked = true;
+        }
+    })
+    if (!oneChecked) {
+        valid = false;
+        alert("Veuillez selectionner une voiture !");
+        console.log("erreur");
+
+    }
+
+    else if (dateDebut.value === "" || dateFin.value === "") {
+        alert("Veuillez saisir des dates !");
+        valid = false;
+    }
+
+    return valid;
+}
+
+function RecuperationValid() {
+    let valid = true;
+    if (agence.querySelector("input").checked === true) {
+        if (selectedConfig.recuperation.heureRecuperation === "") valid = false;
+    }
+
+    if (aeroport.querySelector("input").checked === true) {
+        if (
+            selectedConfig.recuperation.aeroport === "" ||
+            selectedConfig.recuperation.numeroVol === "" ||
+            selectedConfig.recuperation.heureArrivee === ""
+        ) valid = false
+    }
+
+    if (adresse.querySelector("input").checked === true) {
+        if (selectedConfig.recuperation.ville === "" ||
+            selectedConfig.recuperation.adresse === "" ||
+            selectedConfig.recuperation.heureLivraison === ""
+        ) valid = false;
+    }
+
+    return valid;
+}
+
+function VehiculeSection() {
+    vehiculeSection.hidden = false;
+    recuperationSection.hidden = true;
+    selectedConfig.etape = 1;
+    selectedConfig.modeRecuperation = "";
+    precedent = false;
+}
+
+function RecuperationSection() {
+    if (VehiculeValid()) {
+        vehiculeSection.hidden = true;
+        recuperationSection.hidden = false;
+        optionSection.hidden = true;
+        pages.forEach(p => p.classList.remove("current"));
+        pages[0].classList.add("current");
+        let i = 1;
+        nbr.forEach(n => {
+            n.textContent = i;
+            i++;
+        })
+        nbr[0].textContent = "✔";
+        pages[1].classList.add("current");
+        selectedConfig.etape = 2;
+        ModeRecuperation();
+        precedent = true;
+        recommencer[1].textContent = "Précédent";
+        precedent = true;
+        selectedConfig.modeRecuperation = "agence";
+    }
+}
+
+function OptionSection() {
+    if (RecuperationValid()) {
+        vehiculeSection.hidden = true;
+        recuperationSection.hidden = true;
+        optionSection.hidden = false;
+        selectedConfig.etape = 3;
+        pages[2].classList.add("current");
+        nbr[1].textContent = "✔";
+        recommencer[2].textContent = "Précédent";
+        precedent = true;
+    }
+    else {
+        alert("Veuillez remplir tous les champs")
+    }
+}
+
 suivant.forEach(btn => {
     btn.addEventListener("click", () => {
         if (selectedConfig.etape === 1) {
-            vehiculeSection.hidden = true;
-            recuperationSection.hidden = false;
-            selectedConfig.etape++;
+            RecuperationSection();
+        }
+
+        else if (selectedConfig.etape === 2) {
+            OptionSection();
         }
     })
 })
 
+function Recommencer() {
+    window.location.reload();
+}
+
 recommencer.forEach((btn) => {
     btn.addEventListener("click", () => {
-        vehiculeSection.hidden = false;
-        recuperationSection.hidden = true;
+        if (precedent) {
+            if (selectedConfig.etape === 2) {
+                VehiculeSection();
+            }
+            else if (selectedConfig.etape === 3) {
+                RecuperationSection();
+            }
+        }
+
+        else {
+            VehiculeSection();
+            Recommencer();
+        }
     })
-    selectedConfig.etape = 1;
 })
 
 function CreateAgence() {
@@ -70,6 +191,10 @@ function CreateAgence() {
 
     const heureRecuperation = create("input", "heureRecuperation");
     heureRecuperation.type = "time";
+    heureRecuperation.addEventListener("input", () => {
+        selectedConfig.recuperation.heureRecuperation = heureRecuperation.value
+        ChargerPayement(selectedConfig);
+    })
 
     heure.append(heureLabel, heureRecuperation);
 
@@ -93,6 +218,10 @@ function CreateAeroport() {
     aeroInput.type = "text";
     aeroInput.id = "aeroport";
     aeroInput.placeholder = "Casablanca — Mohammed V";
+    aeroInput.addEventListener("input", () => {
+        selectedConfig.recuperation.aeroport = aeroInput.value
+        ChargerPayement(selectedConfig);
+    })
 
     aero.append(aeroLabel, aeroInput);
 
@@ -111,6 +240,10 @@ function CreateAeroport() {
     nVolInput.type = "text";
     nVolInput.id = "Nvol";
     nVolInput.placeholder = "AT 205";
+    nVolInput.addEventListener("input", () => {
+        selectedConfig.recuperation.numeroVol = nVolInput.value
+        ChargerPayement(selectedConfig);
+    })
 
     nVol.append(nVolLabel, nVolInput);
 
@@ -124,6 +257,10 @@ function CreateAeroport() {
     const hVolInput = create("input");
     hVolInput.type = "time";
     hVolInput.id = "Hvol";
+    hVolInput.addEventListener("input", () => {
+        selectedConfig.recuperation.heureArrivee = hVolInput.input
+        ChargerPayement(selectedConfig);
+    })
 
     hVol.append(hVolLabel, hVolInput);
 
@@ -150,6 +287,10 @@ function CreateAdresse() {
     villeInput.type = "text";
     villeInput.id = "villeName";
     villeInput.placeholder = "Casablanca";
+    villeInput.addEventListener("input", () => {
+        selectedConfig.recuperation.ville = villeInput.value
+        ChargerPayement(selectedConfig);
+    })
 
     ville.append(villeLabel, villeInput);
 
@@ -163,6 +304,10 @@ function CreateAdresse() {
     adresseInput.type = "text";
     adresseInput.id = "fullAdresse";
     adresseInput.placeholder = "24, boulevard Zerktouni";
+    adresseInput.addEventListener("input", () => {
+        selectedConfig.recuperation.adresse = adresseInput.value
+        ChargerPayement(selectedConfig);
+    })
 
     adresse.append(adresseLabel, adresseInput);
 
@@ -175,6 +320,10 @@ function CreateAdresse() {
     const heureInput = create("input");
     heureInput.type = "time";
     heureInput.id = "heureLivraison";
+    heureInput.addEventListener("input", () => {
+        selectedConfig.recuperation.heureLivraison = heureInput.value;
+        ChargerPayement(selectedConfig);
+    })
 
     heure.append(heureLabel, heureInput);
 
@@ -188,20 +337,26 @@ function CreateAdresse() {
 function ModeRecuperation() {
     infoRecuperation.replaceChildren();
 
-    if (agence.querySelector("input").checked === true) {
-        CreateAgence();
+    if (selectedConfig.etape === 2) {
+        if (agence.querySelector("input").checked === true) {
+            CreateAgence();
+            selectedConfig.modeRecuperation = "agence";
+            ChargerPayement(selectedConfig);
+            return;
+        }
 
-        return;
-    }
+        if (aeroport.querySelector("input").checked === true) {
+            CreateAeroport();
+            selectedConfig.modeRecuperation = "aeroport";
+            ChargerPayement(selectedConfig);
+            return;
+        }
 
-    if (aeroport.querySelector("input").checked === true) {
-        CreateAeroport();
-
-        return;
-    }
-
-    if (adresse.querySelector("input").checked === true) {
-        CreateAdresse();
+        if (adresse.querySelector("input").checked === true) {
+            CreateAdresse();
+            selectedConfig.modeRecuperation = "adresse";
+            ChargerPayement(selectedConfig);
+        }
     }
 }
 
@@ -218,9 +373,15 @@ const dateDebut = document.querySelector(".date-debut");
 const dateFin = document.querySelector(".date-fin");
 
 dateFin.addEventListener("input", () => {
-    if (selectedConfig.voitureId === null) alert("selectionner dabord une voiture");
-    else if (dateDebut.value === "") alert("Sasir la date de debut");
-    else if (CalculerJours(dateDebut.value, dateFin.value) < 0) alert("La date de début doit etre avant la date de fin");
+    if (dateDebut.value === "") {
+        alert("Sasir la date de debut");
+        dateFin.value = "";
+    }
+    else if (CalculerJours(dateDebut.value, dateFin.value) < 0) {
+        alert("La date de début doit etre avant la date de fin");
+        dateDebut.value = "";
+        dateFin.value = "";
+    }
     else {
         selectedConfig.dateDebut = dateDebut.value;
         selectedConfig.dateFin = dateFin.value;
@@ -274,8 +435,6 @@ function Afficher() {
 
 Afficher();
 
-const sectionPayement = document.querySelector(".payement");
-
 function CalculerJours(debut, fin) {
     let start = new Date(debut);
     let end = new Date(fin);
@@ -312,6 +471,7 @@ function ChargerPayement(selectedConfig) {
     sectionPayement.replaceChildren();
     let voiture = null;
     let nJour = null;
+    let total = null;
     if (selectedConfig.voitureId !== null) {
         voiture = manager.voitures.find((v) => v.id === selectedConfig.voitureId);
     }
@@ -349,6 +509,7 @@ function ChargerPayement(selectedConfig) {
     if (voiture !== null && nJour !== null) {
         nCarLabel.textContent = `Véhicule · ${nJour} × ${voiture.prixJour} MAD`;
         prixCar.textContent = `${nJour * voiture.prixJour} MAD`
+        total = nJour * voiture.prixJour;
     }
     pCar.append(nCarLabel, prixCar);
 
@@ -359,9 +520,28 @@ function ChargerPayement(selectedConfig) {
     pOptions.append(optionsLabel, prixOptions);
 
     const pRecup = create("p");
-    pRecup.hidden = true;
-    const recuperationLabel = create("label", "recuperation");
+    const recuperationLabel = create("label");
+
     const prixRecu = create("span", "prixRecu");
+    if (selectedConfig.modeRecuperation === "") {
+        recuperationLabel.textContent = "";
+        prixRecu.textContent = "";
+        console.log("empty")
+    }
+    else if (selectedConfig.modeRecuperation === "agence") {
+        recuperationLabel.textContent = "Récupération";
+        prixRecu.textContent = "Gratuit";
+    }
+    else if (selectedConfig.modeRecuperation === "aeroport") {
+        recuperationLabel.textContent = "Récupération";
+        prixRecu.textContent = "150 MAD";
+        total += 150;
+    }
+    else if (selectedConfig.modeRecuperation === "adresse") {
+        recuperationLabel.textContent = "Récupération";
+        prixRecu.textContent = "100 MAD";
+        total += 100;
+    }
     pRecup.append(recuperationLabel, prixRecu);
 
     recu.append(pJour, pCar, pOptions, pRecup);
@@ -372,6 +552,10 @@ function ChargerPayement(selectedConfig) {
     const totalLabel = create("label", "total");
     const prixTotal = create("span", "prixTotal");
     pTotal.append(totalLabel, prixTotal);
+    if (total !== null) {
+        totalLabel.textContent = "Total estimé";
+        prixTotal.textContent = `${total} MAD`
+    }
 
     const fraisInfo = create("p");
     fraisInfo.textContent = "Frais de récupération facturés une seule fois."
@@ -408,14 +592,25 @@ article.forEach((a) => {
         input.checked = true;
         ModeRecuperation();
     })
-
 })
 
 
+const siege = document.querySelector(".siege");
+const conducteur = document.querySelector(".conducteur");
 
+siege.addEventListener("click" , () => {
+    if (siege.classList.contains("optionSelectionned")) siege.classList.remove("optionSelectionned")
+    else siege.classList.add("optionSelectionned")
+    if(siege.querySelector("input").checked === true) siege.querySelector("input").checked = false ;
+    else siege.querySelector("input").checked = true ;
+})
 
-
-
+conducteur.addEventListener("click" , () => {
+    if (conducteur.classList.contains("optionSelectionned")) conducteur.classList.remove("optionSelectionned")
+    else conducteur.classList.add("optionSelectionned")
+    if(conducteur.querySelector("input").checked === true) conducteur.querySelector("input").checked = false ;
+    else conducteur.querySelector("input").checked = true ;
+})
 
 
 

@@ -112,7 +112,8 @@ main {
 }
 
 .vehicule,
-.recuperation {
+.recuperation,
+.options {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -124,13 +125,15 @@ main {
 }
 
 .vehicule>h3,
-.recuperation>h3 {
+.recuperation>h3,
+.options>h3 {
     color: var(--primary);
     font-size: 11px;
 }
 
 .vehicule>p,
-.recuperation>p {
+.recuperation>p,
+.options>p {
     color: var(--muted);
     font-size: 11px;
 }
@@ -367,6 +370,41 @@ hr {
     background: var(--surface);
     cursor: pointer;
     transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+}
+
+.modes > .siege , .modes > .conducteur{
+    width: 90vw;
+}
+
+.option > input{
+    width: 15px;
+}
+
+.siege , .conducteur{
+    display: flex;
+    flex-direction: row !important;
+    justify-content: start !important;
+    align-items: flex-start !important;
+}
+
+.option span{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option span h3{
+    font-size: 12px;
+}
+
+.option span p{
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.optionSelectionned{
+    background-color: #F8FAFF !important;
+    border: var(--primary) solid 1px !important;
 }
 
 
