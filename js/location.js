@@ -29,6 +29,15 @@ const selectedConfig = {
     },
 };
 
+let AllLocations = [];
+
+if(!localStorage.getItem("locations")){
+    localStorage.setItem("locations" , JSON.stringify(AllLocations));
+}
+else{
+    AllLocations = JSON.parse(localStorage.getItem("locations"));
+}
+
 console.log(selectedConfig)
 
 
@@ -38,7 +47,9 @@ const sectionPayement = document.querySelector(".payement");
 
 const vehiculeSection = document.querySelector(".vehicule");
 const recuperationSection = document.querySelector(".recuperation");
-const optionSection = document.querySelector(".options")
+const optionSection = document.querySelector(".options");
+const recapSection = document.querySelector(".recap");
+const confirmerSection = document.querySelector(".confirmer");
 
 const suivant = document.querySelectorAll(".suivant");
 const recommencer = document.querySelectorAll(".recommencer");
@@ -99,12 +110,66 @@ function RecuperationValid() {
     return valid;
 }
 
+function FillRecap() {
+    const recapVehicule = document.querySelector(".recapVehicule");
+    const recapDates = document.querySelector(".recapDates");
+    const recapLieu = document.querySelector(".recapLieu");
+    const recapDetail = document.querySelector(".recapDetail");
+    const recapSiege = document.querySelector(".recapSiege");
+    const recapConducteur = document.querySelector(".recapConducteur");
+
+    const voiture = manager.voitures.find(v => v.id === selectedConfig.voitureId);
+
+    recapVehicule.textContent = `${voiture.marque} ${voiture.modele} - ${voiture.prixJour} MAD / jour`;
+
+    recapDates.textContent = `Du ${selectedConfig.dateDebut} au ${selectedConfig.dateFin} - ${CalculerJours(selectedConfig.dateDebut, selectedConfig.dateFin)} jours`;
+
+    if (selectedConfig.modeRecuperation === "agence") {
+        recapLieu.textContent = "A l'agence";
+        recapDetail.textContent = `A ${selectedConfig.recuperation.heureRecuperation}`
+    }
+
+    else if (selectedConfig.modeRecuperation === "aeroport") {
+        recapLieu.textContent = `${selectedConfig.recuperation.aeroport}`;
+        recapDetail.textContent = `Vol ${selectedConfig.recuperation.numeroVol} - arrivé à ${selectedConfig.recuperation.heureArrivee}`;
+    }
+
+    else if (selectedConfig.modeRecuperation === "adresse") {
+        recapLieu.textContent = `A ${selectedConfig.recuperation.ville}`;
+        recapDetail.textContent = `A ${selectedConfig.recuperation.adresse} - Livré à ${selectedConfig.recuperation.heureLivraison}`;
+    }
+
+    if (selectedConfig.options.siegeBebe === true) {
+        recapSiege.textContent = "Siège bébé · 30 MAD / jour.";
+    }
+    else {
+        recapSiege.textContent = "Sans siège bébé."
+    }
+
+    if (selectedConfig.options.conducteurSupplementaire === true) {
+        recapConducteur.textContent = "Conducteur supplémentaire · 200 MAD / jour";
+    }
+    else {
+        recapConducteur.textContent = "Sans conducteur supplémentaire";
+    }
+}
+
 function VehiculeSection() {
     vehiculeSection.hidden = false;
     recuperationSection.hidden = true;
+    optionSection.hidden = true;
+    recapSection.hidden = true;
+    confirmerSection.hidden = true;
     selectedConfig.etape = 1;
-    selectedConfig.modeRecuperation = "";
+    pages.forEach(p => p.classList.remove("current"));
+    pages[0].classList.add("current");
+    let i = 1;
+    nbr.forEach(n => {
+        n.textContent = i;
+        i++;
+    })
     precedent = false;
+    ChargerPayement(selectedConfig);
 }
 
 function RecuperationSection() {
@@ -112,21 +177,23 @@ function RecuperationSection() {
         vehiculeSection.hidden = true;
         recuperationSection.hidden = false;
         optionSection.hidden = true;
+        recapSection.hidden = true;
+        confirmerSection.hidden = true;
         pages.forEach(p => p.classList.remove("current"));
         pages[0].classList.add("current");
+        pages[1].classList.add("current");
         let i = 1;
         nbr.forEach(n => {
             n.textContent = i;
             i++;
         })
         nbr[0].textContent = "✔";
-        pages[1].classList.add("current");
         selectedConfig.etape = 2;
         ModeRecuperation();
         precedent = true;
         recommencer[1].textContent = "Précédent";
         precedent = true;
-        selectedConfig.modeRecuperation = "agence";
+        ChargerPayement(selectedConfig);
     }
 }
 
@@ -135,25 +202,86 @@ function OptionSection() {
         vehiculeSection.hidden = true;
         recuperationSection.hidden = true;
         optionSection.hidden = false;
+        recapSection.hidden = true;
+        confirmerSection.hidden = true;
         selectedConfig.etape = 3;
+        pages.forEach(p => p.classList.remove("current"));
+        pages[0].classList.add("current");
+        pages[1].classList.add("current");
         pages[2].classList.add("current");
+        let i = 1;
+        nbr.forEach(n => {
+            n.textContent = i;
+            i++;
+        })
+        nbr[0].textContent = "✔";
         nbr[1].textContent = "✔";
         recommencer[2].textContent = "Précédent";
         precedent = true;
+        ChargerPayement(selectedConfig);
     }
     else {
         alert("Veuillez remplir tous les champs")
     }
 }
 
+function RecapSection() {
+    vehiculeSection.hidden = true;
+    recuperationSection.hidden = true;
+    optionSection.hidden = true;
+    recapSection.hidden = false;
+    confirmerSection.hidden = true;
+    selectedConfig.etape = 4;
+    pages.forEach(p => p.classList.remove("current"));
+    pages[0].classList.add("current");
+    pages[1].classList.add("current");
+    pages[2].classList.add("current");
+    pages[3].classList.add("current");
+    let i = 1;
+    nbr.forEach(n => {
+        n.textContent = i;
+        i++;
+    })
+    nbr[0].textContent = "✔";
+    nbr[1].textContent = "✔";
+    nbr[2].textContent = "✔";
+    recommencer[3].textContent = "Précédent";
+    suivant[3].textContent = "Confirmer";
+    precedent = true;
+    FillRecap();
+    ChargerPayement(selectedConfig);
+}
+
+function ConfirmerSection() {
+    vehiculeSection.hidden = true;
+    recuperationSection.hidden = true;
+    optionSection.hidden = true;
+    recapSection.hidden = true;
+    confirmerSection.hidden = false;
+}
+
 suivant.forEach(btn => {
     btn.addEventListener("click", () => {
-        if (selectedConfig.etape === 1) {
-            RecuperationSection();
+        if (btn.classList.contains("nouveau")) {
+            Recommencer();
         }
+        else {
+            if (selectedConfig.etape === 1) {
+                RecuperationSection();
+            }
 
-        else if (selectedConfig.etape === 2) {
-            OptionSection();
+            else if (selectedConfig.etape === 2) {
+                OptionSection();
+            }
+
+            else if (selectedConfig.etape === 3) {
+                RecapSection();
+            }
+            else if(selectedConfig.etape === 4){
+                ConfirmerSection();
+                AllLocations.push(selectedConfig);
+                localStorage.setItem("locations" , JSON.stringify(AllLocations));
+            }
         }
     })
 })
@@ -170,6 +298,9 @@ recommencer.forEach((btn) => {
             }
             else if (selectedConfig.etape === 3) {
                 RecuperationSection();
+            }
+            else if (selectedConfig.etape === 4) {
+                OptionSection();
             }
         }
 
@@ -195,6 +326,7 @@ function CreateAgence() {
         selectedConfig.recuperation.heureRecuperation = heureRecuperation.value
         ChargerPayement(selectedConfig);
     })
+    heureRecuperation.value = selectedConfig.recuperation.heureRecuperation;
 
     heure.append(heureLabel, heureRecuperation);
 
@@ -219,9 +351,10 @@ function CreateAeroport() {
     aeroInput.id = "aeroport";
     aeroInput.placeholder = "Casablanca — Mohammed V";
     aeroInput.addEventListener("input", () => {
-        selectedConfig.recuperation.aeroport = aeroInput.value
+        selectedConfig.recuperation.aeroport = aeroInput.value;
         ChargerPayement(selectedConfig);
     })
+    aeroInput.value = selectedConfig.recuperation.aeroport;
 
     aero.append(aeroLabel, aeroInput);
 
@@ -241,9 +374,10 @@ function CreateAeroport() {
     nVolInput.id = "Nvol";
     nVolInput.placeholder = "AT 205";
     nVolInput.addEventListener("input", () => {
-        selectedConfig.recuperation.numeroVol = nVolInput.value
+        selectedConfig.recuperation.numeroVol = nVolInput.value;
         ChargerPayement(selectedConfig);
     })
+    nVolInput.value = selectedConfig.recuperation.numeroVol;
 
     nVol.append(nVolLabel, nVolInput);
 
@@ -258,9 +392,10 @@ function CreateAeroport() {
     hVolInput.type = "time";
     hVolInput.id = "Hvol";
     hVolInput.addEventListener("input", () => {
-        selectedConfig.recuperation.heureArrivee = hVolInput.input
+        selectedConfig.recuperation.heureArrivee = hVolInput.value;
         ChargerPayement(selectedConfig);
     })
+    hVolInput.value = selectedConfig.recuperation.heureArrivee;
 
     hVol.append(hVolLabel, hVolInput);
 
@@ -288,9 +423,10 @@ function CreateAdresse() {
     villeInput.id = "villeName";
     villeInput.placeholder = "Casablanca";
     villeInput.addEventListener("input", () => {
-        selectedConfig.recuperation.ville = villeInput.value
+        selectedConfig.recuperation.ville = villeInput.value;
         ChargerPayement(selectedConfig);
     })
+    villeInput.value = selectedConfig.recuperation.ville;
 
     ville.append(villeLabel, villeInput);
 
@@ -305,9 +441,10 @@ function CreateAdresse() {
     adresseInput.id = "fullAdresse";
     adresseInput.placeholder = "24, boulevard Zerktouni";
     adresseInput.addEventListener("input", () => {
-        selectedConfig.recuperation.adresse = adresseInput.value
+        selectedConfig.recuperation.adresse = adresseInput.value;
         ChargerPayement(selectedConfig);
     })
+    adresseInput.value = selectedConfig.recuperation.adresse;
 
     adresse.append(adresseLabel, adresseInput);
 
@@ -324,6 +461,7 @@ function CreateAdresse() {
         selectedConfig.recuperation.heureLivraison = heureInput.value;
         ChargerPayement(selectedConfig);
     })
+    heureInput.value = selectedConfig.recuperation.heureLivraison;
 
     heure.append(heureLabel, heureInput);
 
@@ -336,27 +474,24 @@ function CreateAdresse() {
 
 function ModeRecuperation() {
     infoRecuperation.replaceChildren();
+    if (agence.querySelector("input").checked === true) {
+        CreateAgence();
+        selectedConfig.modeRecuperation = "agence";
+        ChargerPayement(selectedConfig);
+        return;
+    }
 
-    if (selectedConfig.etape === 2) {
-        if (agence.querySelector("input").checked === true) {
-            CreateAgence();
-            selectedConfig.modeRecuperation = "agence";
-            ChargerPayement(selectedConfig);
-            return;
-        }
+    if (aeroport.querySelector("input").checked === true) {
+        CreateAeroport();
+        selectedConfig.modeRecuperation = "aeroport";
+        ChargerPayement(selectedConfig);
+        return;
+    }
 
-        if (aeroport.querySelector("input").checked === true) {
-            CreateAeroport();
-            selectedConfig.modeRecuperation = "aeroport";
-            ChargerPayement(selectedConfig);
-            return;
-        }
-
-        if (adresse.querySelector("input").checked === true) {
-            CreateAdresse();
-            selectedConfig.modeRecuperation = "adresse";
-            ChargerPayement(selectedConfig);
-        }
+    if (adresse.querySelector("input").checked === true) {
+        CreateAdresse();
+        selectedConfig.modeRecuperation = "adresse";
+        ChargerPayement(selectedConfig);
     }
 }
 
@@ -513,19 +648,32 @@ function ChargerPayement(selectedConfig) {
     }
     pCar.append(nCarLabel, prixCar);
 
-    const pOptions = create("p");
-    pOptions.hidden = true;
-    const options1Label = create("label", "options");
+    const pOptions1 = create("p");
+    pOptions1.hidden = true;
+    const options1Label = create("label", "siege");
     const prixOptions1 = create("span", "prixOptions");
 
-    const options2Label = create("label", "options");
+    const pOptions2 = create("p");
+    pOptions2.hidden = true;
+    const options2Label = create("label", "conducteur");
     const prixOptions2 = create("span", "prixOptions");
 
-    pOptions.append(options1Label, prixOptions1, options2Label, prixOptions2);
-
-    if(selectedConfig.options.siegeBebe === true){
-        options1Label.textContent = `Siège`
+    if (selectedConfig.options.siegeBebe === true) {
+        pOptions1.hidden = false;
+        options1Label.textContent = `Siège bébé . ${nJour} x 30 MAD`;
+        prixOptions1.textContent = `${nJour * 30} MAD`;
+        total += nJour * 30;
     }
+
+    if (selectedConfig.options.conducteurSupplementaire === true) {
+        pOptions2.hidden = false;
+        options2Label.textContent = `Conducteur . ${nJour} x 200 MAD`;
+        prixOptions2.textContent = `${nJour * 200} MAD`;
+        total += nJour * 200;
+    }
+
+    pOptions1.append(options1Label, prixOptions1);
+    pOptions2.append(options2Label, prixOptions2);
 
     const pRecup = create("p");
     const recuperationLabel = create("label");
@@ -551,7 +699,7 @@ function ChargerPayement(selectedConfig) {
     }
     pRecup.append(recuperationLabel, prixRecu);
 
-    recu.append(pJour, pCar, pOptions, pRecup);
+    recu.append(pJour, pCar, pOptions1, pOptions2, pRecup);
 
     const hr2 = create("hr");
 
@@ -605,33 +753,35 @@ article.forEach((a) => {
 const siege = document.querySelector(".siege");
 const conducteur = document.querySelector(".conducteur");
 
-siege.addEventListener("click" , () => {
+siege.addEventListener("click", () => {
     if (siege.classList.contains("optionSelectionned")) siege.classList.remove("optionSelectionned")
     else siege.classList.add("optionSelectionned")
-    if(siege.querySelector("input").checked === true){
-        siege.querySelector("input").checked = false ;
+    if (siege.querySelector("input").checked === true) {
+        siege.querySelector("input").checked = false;
         selectedConfig.options.siegeBebe = false;
     }
-    else{
-        siege.querySelector("input").checked = true ;
+    else {
+        siege.querySelector("input").checked = true;
         selectedConfig.options.siegeBebe = true;
     }
-    ChargerPayement();
+    ChargerPayement(selectedConfig);
 })
 
-conducteur.addEventListener("click" , () => {
+conducteur.addEventListener("click", () => {
     if (conducteur.classList.contains("optionSelectionned")) conducteur.classList.remove("optionSelectionned")
     else conducteur.classList.add("optionSelectionned")
-    if(conducteur.querySelector("input").checked === true){
-        conducteur.querySelector("input").checked = false ;
+    if (conducteur.querySelector("input").checked === true) {
+        conducteur.querySelector("input").checked = false;
         selectedConfig.options.conducteurSupplementaire = false;
     }
     else {
-        conducteur.querySelector("input").checked = true ;
+        conducteur.querySelector("input").checked = true;
         selectedConfig.options.conducteurSupplementaire = true;
     }
-    ChargerPayement();
+    ChargerPayement(selectedConfig);
 })
+
+
 
 
 
@@ -704,38 +854,3 @@ const config = {
         },
     ],
 };
-
-// 2. SÃ‰LECTION : les choix de l'utilisateur, Ã  actualiser avec les formulaires.
-// Les identifiants correspondent aux id dÃ©finis dans config.
-// Les dates seront des chaÃ®nes au format AAAA-MM-JJ (valeur d'un input date).
-
-
-/*
- * 3. Ã€ VOUS DE JOUER
- *
- * 1) SÃ©lectionner vos Ã©lÃ©ments HTML et afficher les voitures depuis config.
- * 2) Ã‰couter les Ã©vÃ©nements et mettre Ã  jour selectedConfig.
- *    Attention : la valeur d'un select est une chaÃ®ne ; voitureId est un nombre.
- *    Pour une case Ã  cocher, utiliser checked pour rÃ©cupÃ©rer true ou false.
- * 3) GÃ©rer les boutons PrÃ©cÃ©dent / Suivant et afficher une seule Ã©tape.
- * 4) Afficher les champs du mode de rÃ©cupÃ©ration sÃ©lectionnÃ©.
- *    Masquer et dÃ©sactiver les autres ; adapter required.
- * 5) Valider l'Ã©tape courante avant de passer Ã  la suivante.
- * 6) Calculer et actualiser le prix quand les choix changent.
- * 7) Afficher le rÃ©capitulatif des seuls champs concernÃ©s, puis confirmer.
- * 8) Permettre de recommencer avec les valeurs initiales.
- *
- * RÃˆGLES DU PRIX
- * - Les deux dates sont incluses : du 10 au 12 = 3 jours.
- * - Une location sur une mÃªme date = 1 jour.
- * - Le dÃ©but ne peut pas Ãªtre passÃ© ; la fin ne peut pas prÃ©cÃ©der le dÃ©but.
- * - Total = jours Ã— (prixParJour de la voiture + options par jour)
- *           + fraisFixes du mode de rÃ©cupÃ©ration.
- * - Les frais de rÃ©cupÃ©ration sont ajoutÃ©s une seule fois.
- * - Aucun renseignement supplÃ©mentaire pour le conducteur.
- * - Ne pas afficher un total numÃ©rique tant que la voiture ou les dates
- *   sont manquantes ou invalides.
- *
- * Exemple de contrÃ´le : Sandero, du 10 au 12, siÃ¨ge bÃ©bÃ©, aÃ©roport
- * â†’ 3 Ã— (250 + 30) + 150 = 990 MAD.
- */

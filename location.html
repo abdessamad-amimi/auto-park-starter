@@ -107,8 +107,8 @@
             <p>Choisissez le lieu qui vous convient.</p>
 
             <div class="modes">
-                <article class="selectionned mode agence">
-                    <input checked name="recupereation" type="radio">
+                <article class=" mode agence">
+                    <input name="recupereation" type="radio">
                     <h3>A l'agence</h3>
                     <p>Gratuit</p>
                 </article>
@@ -179,11 +179,105 @@
             </section>
         </section>
 
+        <section hidden class="recap">
+            <h3>04 / RÉCAPITULATIF</h3>
+            <h2>Vérifiez votre demande</h2>
+            <p>Tout est prêt ? Vérifiez vos informations avant de confirmer.</p>
+
+            <div class="resume">
+                <article class="bloc blocVehicule">
+                    <div class="infos">
+                        <h4>Véhicule et dates</h4>
+                        <p class="recapVehicule">Dacia Sandero · 250 MAD / jour</p>
+                        <p class="recapDates">Du 10 au 12 novembre 2026 · 3 jours</p>
+                    </div>
+                    <button class="modifier" data-step="1">Modifier</button>
+                </article>
+
+                <article class="bloc blocRecuperation">
+                    <div class="infos">
+                        <h4>Récupération</h4>
+                        <p class="recapLieu">Aéroport Mohammed V, Casablanca</p>
+                        <p class="recapDetail">Vol AT 205 · arrivée à 10:30</p>
+                    </div>
+                    <button class="modifier" data-step="2">Modifier</button>
+                </article>
+
+                <article class="bloc blocOptions">
+                    <div class="infos">
+                        <h4>Options</h4>
+                        <p class="recapSiege">Siège bébé · 30 MAD / jour</p>
+                        <p class="recapConducteur">Sans conducteur supplémentaire</p>
+                    </div>
+                    <button class="modifier" data-step="3">Modifier</button>
+                </article>
+            </div>
+
+            <hr>
+
+            <section class="periode infoConfirmation">
+                <p>La confirmation transmet une demande simulée. Aucun paiement n'est demandé.</p>
+            </section>
+
+            <section class="actions">
+                <button class="recommencer">Recommencer</button>
+                <button class="suivant">Confirmer</button>
+            </section>
+        </section>
+
+        <section hidden class="confirmer">
+            <h4>✓ Demande confirmée</h4>
+            <h2>Votre demande est enregistrée.</h2>
+            <h3>04 / RÉCAPITULATIF</h3>
+            <p>Merci ! Retrouvez ci-dessous le résumé de votre location.</p>
+
+            <div class="resume">
+                <article class="bloc blocVehicule">
+                    <div class="infos">
+                        <h4>Véhicule et dates</h4>
+                        <p class="recapVehicule">Dacia Sandero · 250 MAD / jour</p>
+                        <p class="recapDates">Du 10 au 12 novembre 2026 · 3 jours</p>
+                    </div>
+                </article>
+
+                <article class="bloc blocRecuperation">
+                    <div class="infos">
+                        <h4>Récupération</h4>
+                        <p class="recapLieu">Aéroport Mohammed V, Casablanca</p>
+                        <p class="recapDetail">Vol AT 205 · arrivée à 10:30</p>
+                    </div>
+                </article>
+
+                <article class="bloc blocOptions">
+                    <div class="infos">
+                        <h4>Options</h4>
+                        <p class="recapSiege">Siège bébé · 30 MAD / jour</p>
+                        <p class="recapConducteur">Sans conducteur supplémentaire</p>
+                    </div>
+                </article>
+            </div>
+
+            <hr>
+
+            <section class="periode infoConfirmation">
+                <p>La confirmation transmet une demande simulée. Aucun paiement n'est demandé.</p>
+            </section>
+
+            <section class="actions">
+                <button class="suivant nouveau">Nouvelle location</button>
+            </section>
+        </section>
+
         <section class="payement">
 
         </section>
 
     </main>
+
+    <footer style="margin-top: 20px;" class="site-footer container">
+        <span>AutoPark</span>
+        <p>Une gestion simple, un parc bien organisé.</p>
+    </footer>
 </body>
 
 </html>
