@@ -102,3 +102,68 @@ Le reste de la page reste adapté à la largeur de l'écran.
 
 Compléter ensuite ce README avec vos choix, les fonctionnalités réalisées,
 l'organisation de vos modules et le lien de déploiement.
+
+
+---
+
+# Ajouts au projet
+
+## Liens
+
+- **Application déployée (GitHub Pages)** : https://abdessamad-amimi.github.io/auto-park-starter/
+- **Tableau Jira (AP board)** : https://abdessamadamimi99.atlassian.net/jira/software/projects/AP/boards/36?filter=&groupBy=none
+- **Dépôt GitHub** : https://github.com/abdessamad-amimi/auto-park-starter
+
+## Fichiers ajoutés
+
+| Fichier | Rôle |
+| --- | --- |
+| `index.html` | Page **Dashboard** : compteurs (total, disponibles, louées, en maintenance), barres de répartition par statut et décompte par catégorie. Stylée avec Tailwind CSS. |
+| `js/dashboard.js` | Lit les voitures via `ManagerVoiture` (même `localStorage` que la page de gestion) et met à jour les compteurs et les barres. |
+| `location.html` | Page **Ma location** : configurateur de location en plusieurs étapes avec indicateur de progression. |
+| `css/location.css` | Styles propres à la page de location. |
+| `js/location.js` | Logique du configurateur : configuration sélectionnée, navigation entre étapes, validation, formulaire de récupération dynamique, bouton Recommencer. |
+| `js/managers/VoitureManager.js` | Gestion des voitures et persistance dans `localStorage`. |
+| `js/managers/LocationManager.js` | Gestion des locations (ajout, affichage) et persistance dans `localStorage`. |
+| `js/managers/ClientManager.js` | Gestion des clients (ajout, affichage) et persistance dans `localStorage`. |
+| `js/models/Voiture.js` | Modèle `Voiture`. |
+| `js/models/Client.js` | Modèle `Client` (id, nom, téléphone, email). |
+| `js/models/Location.js` | Modèle `Location` (client, voiture, dates, récupération, options). |
+| `js/view/selectors.js` | Sélecteurs DOM centralisés. |
+| `js/view/ui.js` | Affichage du tableau, état vide et validation du formulaire de gestion. |
+| `js/view/voitureElements.js` | Création des lignes du tableau des voitures. |
+
+## Fichiers du starter complétés
+
+- `voitures.html` : page Gestion du parc, désormais pilotée par JavaScript.
+- `js/voitures.js` : point d'entrée de la gestion du parc (ajout, modification, suppression, recherche, filtres, tri).
+- `js/data.js` : données initiales utilisées uniquement en l'absence de sauvegarde.
+- `css/style.css` : style commun, partagé avec la page de location.
+
+## Organisation des modules
+
+```
+├── index.html            # Dashboard
+├── voitures.html         # Gestion du parc
+├── location.html         # Configurateur de location
+├── css/
+│   ├── style.css
+│   └── location.css
+└── js/
+    ├── data.js
+    ├── voitures.js
+    ├── location.js
+    ├── dashboard.js
+    ├── managers/         # logique + localStorage
+    │   ├── VoitureManager.js
+    │   ├── LocationManager.js
+    │   └── ClientManager.js
+    ├── models/           # classes métier
+    │   ├── Voiture.js
+    │   ├── Client.js
+    │   └── Location.js
+    └── view/             # DOM et affichage
+        ├── selectors.js
+        ├── ui.js
+        └── voitureElements.js
+```
